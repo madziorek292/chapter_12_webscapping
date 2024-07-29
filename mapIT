@@ -1,0 +1,37 @@
+#! python3
+# mapIt.py - Uruchamia mapę w przeglądarce z adresem z wiersza poleceń lub schowka.
+import webbrowser, sys, pyperclip
+
+if len(sys.argv) > 1:
+    # Pobierz adres z wiersza poleceń.
+    address = ' '.join(sys.argv[1:])
+else:
+    # Pobierz adres ze schowka.
+    address = pyperclip.paste()
+
+webbrowser.open('https://www.google.com/maps/place/' + address)
+
+
+
+#Projekt ten ma na celu automatyzację procesu otwierania przeglądarki z adresem w Google Maps, co może zaoszczędzić trochę czasu w porównaniu do ręcznego wprowadzania adresu. W skrócie, skrypt wykonuje następujące czynności:
+
+#Pobiera adres z argumentów wiersza poleceń lub schowka.
+#Otwiera stronę Google Maps z podanym adresem w przeglądarce.
+
+#Krok 1: Ustal URL
+#Aby wyświetlić mapę Google z danym adresem, można użyć adresu URL w formacie: https://www.google.com/maps/place/your_address_string.
+
+#Krok 2: Obsługa argumentów wiersza poleceń
+#Kod na tym etapie wygląda tak:
+
+#Importuje moduły webbrowser i sys.
+#Sprawdza, czy przekazano argumenty wiersza poleceń (czyli czy długość sys.argv jest większa niż 1).
+#Jeśli są argumenty, łączy je w jeden string (pomijając pierwszy element, którym jest nazwa skryptu) i zapisuje w zmiennej address.
+#Krok 3: Obsługa zawartości schowka i uruchomienie przeglądarki
+
+#Importuje moduły webbrowser, sys oraz pyperclip (do obsługi schowka).
+#Jeśli są argumenty wiersza poleceń, pobiera adres z tych argumentów.
+#Jeśli nie ma argumentów, pobiera adres ze schowka za pomocą pyperclip.paste().
+#Otwiera przeglądarkę z adresem w Google Maps, używając webbrowser.open().
+#Podsumowanie
+#Skrypt mapIt.py ułatwia życie, automatyzując otwieranie mapy Google z adresem. Zamiast ręcznie kopiować i wklejać adres do przeglądarki, wystarczy skopiować adres i uruchomić skrypt. Dzięki temu można zaoszczędzić kilka kroków i trochę czasu.
