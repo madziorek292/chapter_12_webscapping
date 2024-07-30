@@ -1,0 +1,74 @@
+#! python3
+# downloadXkcd.py - Pobiera wszystkie komiksy XKCD.
+import requests, os, bs4
+
+url = 'https://xkcd.com'  # URL startowy
+os.makedirs('xkcd', exist_ok=True)  # przechowuj komiksy w ./xkcd
+
+while not url.endswith('#'):
+    # Pobierz stronę.
+    print('Downloading page %s...' % url)
+    res = requests.get(url)
+    res.raise_for_status()
+    
+    soup = bs4.BeautifulSoup(res.text, 'html.parser')
+    # Znajdź URL obrazu komiksu.
+    comicElem = soup.select('#comic img')
+    if comicElem == []:
+        print('Could not find comic image.')
+    else:
+        comicUrl = 'https:' + comicElem[0].get('src')
+        # Pobierz obraz.
+        print('Downloading image %s...' % (comicUrl))
+        res = requests.get(comicUrl)
+        res.raise_for_status()
+        
+        # Zapisz obraz do ./xkcd.
+        imageFile = open(os.path.join('xkcd', os.path.basename(comicUrl)), 'wb')
+        for chunk in res.iter_content(100000):
+            imageFile.write(chunk)
+        imageFile.close()
+
+    # Pobierz URL przycisku „Prev”.
+    prevLink = soup.select('a[rel="prev"]')[0]
+    url = 'https://xkcd.com' + prevLink.get('href')
+
+print('Done.')
+
+
+
+#Wyjaśnienie kroków:
+#Pobierz stronę: Użyj requests.get(url), aby pobrać stronę.
+#Znajdź URL obrazu komiksu: Użyj soup.select('#comic img'), aby znaleźć element <img> wewnątrz elementu <div id="comic">.
+#Pobierz i zapisz obraz: Jeśli element <img> istnieje, pobierz obraz za pomocą requests.get(comicUrl) i zapisz go na dysku twardym.
+#Znajdź URL przycisku „Prev”: Użyj soup.select('a[rel="prev"]')[0], aby znaleźć URL linku „Previous Comic” i zaktualizować zmienną url.
+#Ten projekt automatycznie pobiera wszystkie komiksy XKCD, śledząc linki do poprzednich komiksów.
+
+
+
+#Cel projektu:
+#Wiele blogów i regularnie aktualizowanych stron internetowych ma stronę główną z najnowszym postem oraz przyciskiem „Previous” (poprzedni), który prowadzi do poprzedniego wpisu. Następnie ten wpis również ma przycisk „Previous”, i tak dalej, tworząc ścieżkę od najnowszej strony do pierwszego wpisu na stronie. Jeśli chcesz mieć kopię zawartości strony do przeczytania offline, możesz ręcznie nawigować po każdej stronie i zapisać każdą z nich. Jednak jest to bardzo nudne zadanie, więc napiszmy program, który to zrobi za nas.
+
+#XKCD to popularny geekowy webkomiks z witryną, która pasuje do tej struktury. Strona główna pod adresem https://xkcd.com/ ma przycisk „Prev”, który prowadzi użytkownika przez poprzednie komiksy. Pobieranie każdego komiksu ręcznie zajęłoby wieczność, ale możemy napisać skrypt, który zrobi to w kilka minut.
+
+#Opis programu:
+
+#Ładuje stronę główną XKCD.
+#Zapisuje obraz komiksu na tej stronie.
+#Podąża za linkiem „Previous Comic”.
+#Powtarza, aż dotrze do pierwszego komiksu.
+#Kroki do wykonania w kodzie:
+
+#Pobierz strony za pomocą modułu requests.
+#Znajdź URL obrazu komiksu na stronie za pomocą Beautiful Soup.
+#Pobierz i zapisz obraz komiksu na dysku twardym za pomocą metody iter_content().
+#Znajdź URL linku „Previous Comic” i powtórz.
+#Otwórz nową kartę edytora i zapisz plik jako downloadXkcd.py.
+
+#Krok 1: Zaprojektuj program
+#Analiza strony:
+
+#URL pliku obrazu komiksu znajduje się w atrybucie src elementu <img>.
+#Element <img> znajduje się wewnątrz elementu <div id="comic">.
+#Przycisk „Prev” ma atrybut HTML rel o wartości prev.
+#Pierwszy komiks ma link do URL https://xkcd.com/#, co oznacza, że nie ma wcześniejszych stron.
