@@ -1,0 +1,42 @@
+#Projekt: Otwieranie wszystkich wyników wyszukiwania
+#Cel projektu:
+#Często, gdy wyszukuję temat w Google, nie ograniczam się do przeglądania jednego wyniku na raz. Zazwyczaj klikam środkowym przyciskiem myszy (lub przytrzymując Ctrl) na kilka pierwszych linków, aby otworzyć je w nowych kartach i przeczytać później. Proces ten jest czasochłonny, więc dobrze byłoby mieć możliwość wpisania terminu wyszukiwania w wierszu poleceń i automatycznego otwarcia przeglądarki z wszystkimi najważniejszymi wynikami wyszukiwania w nowych kartach. Napiszmy skrypt, który to zrobi, używając strony wyników wyszukiwania Python Package Index na https://pypi.org/.
+
+#Skrypt robi następujące rzeczy:
+
+#Pobiera słowa kluczowe wyszukiwania z argumentów wiersza poleceń.
+#Pobiera stronę wyników wyszukiwania.
+#Otwiera kartę przeglądarki dla każdego wyniku.
+#Kroki do wykonania w kodzie:
+
+#Odczytanie argumentów wiersza poleceń za pomocą sys.argv.
+#Pobranie strony wyników wyszukiwania za pomocą modułu requests.
+#Znalezienie linków do każdego wyniku wyszukiwania.
+#Wywołanie funkcji webbrowser.open(), aby otworzyć przeglądarkę.
+#Krok 1: Pobierz argumenty wiersza poleceń i zażądaj strony wyszukiwania
+#Najpierw musisz znać URL strony wyników wyszukiwania. Sprawdź adres w pasku przeglądarki po wyszukaniu, np. https://pypi.org/search/?q=<SEARCH_TERM_HERE>. Moduł requests może pobrać tę stronę, a następnie możesz użyć Beautiful Soup do znalezienia linków wyników w HTML-u. W końcu użyjesz modułu webbrowser do otwarcia tych linków w kartach przeglądarki.
+
+#Przykład kodu:
+
+#! python3
+# searchpypi.py - Otwiera kilka wyników wyszukiwania.
+import requests, sys, webbrowser, bs4
+
+# Otwórz kartę przeglądarki dla każdego wyniku.
+linkElems = soup.select('.package-snippet')
+numOpen = min(5, len(linkElems))
+for i in range(numOpen):
+    urlToOpen = 'https://pypi.org' + linkElems[i].get('href')
+    print('Opening', urlToOpen)
+    webbrowser.open(urlToOpen)
+
+
+
+#Krok 1: Pobierz argumenty wiersza poleceń i zażądaj strony wyszukiwania
+#Najpierw musisz znać URL strony wyników wyszukiwania. Sprawdź adres w pasku przeglądarki po wyszukaniu, np. https://pypi.org/search/?q=<SEARCH_TERM_HERE>. Moduł requests może pobrać tę stronę, a następnie możesz użyć Beautiful Soup do znalezienia linków wyników w HTML-u. W końcu użyjesz modułu webbrowser do otwarcia tych linków w kartach przeglądarki.
+#Krok 2: Znajdź wszystkie wyniki
+#Użyj Beautiful Soup, aby wyodrębnić najlepsze linki wyników wyszukiwania z pobranego HTML-a. Znajdź selektor CSS, który wybierze tylko interesujące cię linki.
+
+#Krok 3: Otwórz przeglądarki dla każdego wyniku
+#Na końcu skryptu dodaj kod, który otworzy karty przeglądarki dla wyników:
+
