@@ -1,0 +1,34 @@
+#! python3
+# searchpypi.py - Otwiera kilka wyników wyszukiwania.
+
+import requests, sys, webbrowser, bs4
+
+# --snip--
+
+# Otwórz kartę przeglądarki dla każdego wyniku.
+linkElems = soup.select('.package-snippet')
+numOpen = min(5, len(linkElems))
+for i in range(numOpen):
+    urlToOpen = 'https://pypi.org' + linkElems[i].get('href')
+    print('Otwieranie', urlToOpen)
+    webbrowser.open(urlToOpen)
+
+
+
+#Opis projektu:
+
+#Zadaniem tego projektu jest napisanie skryptu, który automatycznie otwiera przeglądarkę i otwiera w nowych kartach wszystkie wyniki wyszukiwania dla podanego terminu. Skrypt będzie wyszukiwał na stronie Python Package Index (https://pypi.org/). Podobny skrypt można zaadaptować do innych stron internetowych, chociaż Google i DuckDuckGo stosują często mechanizmy utrudniające zautomatyzowane przeszukiwanie ich stron wyników.
+
+#Co ma zrobić twój program:
+
+#Pobiera słowa kluczowe z argumentów wiersza poleceń.
+#Pobiera stronę wyników wyszukiwania.
+#Otwiera kartę przeglądarki dla każdego wyniku.
+#Twoje zadanie obejmuje:
+
+#Odczytanie argumentów wiersza poleceń z sys.argv.
+#Pobranie strony wyników wyszukiwania za pomocą modułu requests.
+#Znalezienie linków do każdego wyniku wyszukiwania.
+#Wywołanie funkcji webbrowser.open(), aby otworzyć przeglądarkę.
+#Krok 1: Pobierz argumenty wiersza poleceń i zażądaj strony wyników wyszukiwania
+#Najpierw musisz znać URL strony wyników wyszukiwania. W przeglądarce, po wykonaniu wyszukiwania, URL będzie wyglądał tak: https://pypi.org/search/?q=<SEARCH_TERM_HERE>. Moduł requests może pobrać tę stronę, a następnie użyjesz Beautiful Soup, aby znaleźć linki do wyników wyszukiwania w HTML-u. Na końcu użyjesz modułu webbrowser, aby otworzyć te linki w kartach przeglądarki.
