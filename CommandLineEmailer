@@ -1,0 +1,111 @@
+#Projekt: Command Line Emailer
+#Wymagania:
+#Python
+#Selenium
+#Przeglądarka (np. Chrome) i odpowiedni WebDriver (np. ChromeDriver)
+#Kroki:
+#Instalacja wymaganych bibliotek.
+#Logowanie do konta e-mail.
+#Wysłanie wiadomości e-mail.
+
+#Wyjaśnienie krok po kroku:
+#Importowanie bibliotek:
+
+#sys: Do obsługi argumentów wiersza poleceń.
+#selenium: Do automatyzacji przeglądarki.
+#webdriver_manager: Do automatycznego pobierania i instalacji WebDriver.
+#time: Do wstrzymywania wykonania kodu (np. oczekiwanie na załadowanie strony).
+#Funkcja send_email:
+
+#Przyjmuje dwa argumenty: adres odbiorcy (recipient) i treść wiadomości (message).
+#Dane logowania do konta Gmail są wprowadzone bezpośrednio do kodu (w rzeczywistym projekcie należy je chronić).
+#Ustawienia przeglądarki i inicjalizacja WebDriver.
+#Przejście do strony logowania Gmail i zalogowanie się.
+#Kliknięcie przycisku "Utwórz" w Gmailu.
+#Wprowadzenie adresu odbiorcy, tematu i treści wiadomości.
+#Kliknięcie przycisku "Wyślij" i oczekiwanie na wysłanie wiadomości.
+#Obsługa błędów i zamknięcie przeglądarki.
+#Główna część skryptu:
+
+#Sprawdza, czy zostały podane dwa argumenty (adres e-mail i wiadomość).
+#Wywołuje funkcję send_email z podanymi argumentami.
+
+#Ważne:
+#Pamiętaj, aby nie przechowywać haseł w kodzie w czystej postaci. Zamiast tego używaj zmiennych środowiskowych lub bezpieczniejszych metod przechowywania danych uwierzytelniających.
+#Gmail może wymagać dodatkowych kroków weryfikacyjnych (np. weryfikacja dwuetapowa), co może wymagać dodatkowej konfiguracji.
+#Rozważ użycie API do wysyłania wiadomości e-mail (np. Gmail API), które jest bezpieczniejsze i bardziej niezawodne.
+
+
+
+
+import sys
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+
+def send_email(recipient, message):
+    # Dane logowania do konta e-mail (np. Gmail)
+    email = "twoj_email@gmail.com"
+    password = "twoje_haslo"
+    
+    # Konfiguracja WebDriver
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')  # Opcjonalnie, aby uruchomić w trybie bez głowy
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    
+    try:
+        # Wejście na stronę logowania Gmail
+        driver.get("https://mail.google.com/")
+        time.sleep(3)
+        
+        # Logowanie do Gmail
+        email_field = driver.find_element(By.XPATH, '//*[@id="identifierId"]')
+        email_field.send_keys(email)
+        email_field.send_keys(Keys.RETURN)
+        time.sleep(3)
+        
+        password_field = driver.find_element(By.XPATH, '//*[@name="password"]')
+        password_field.send_keys(password)
+        password_field.send_keys(Keys.RETURN)
+        time.sleep(5)
+        
+        # Kliknięcie przycisku "Utwórz"
+        compose_button = driver.find_element(By.XPATH, '//div[@class="T-I T-I-KE L3"]')
+        compose_button.click()
+        time.sleep(3)
+        
+        # Wypełnianie formularza wiadomości
+        to_field = driver.find_element(By.XPATH, '//textarea[@name="to"]')
+        to_field.send_keys(recipient)
+        
+        subject_field = driver.find_element(By.XPATH, '//input[@name="subjectbox"]')
+        subject_field.send_keys('Automatyczna wiadomość')
+        
+        message_body = driver.find_element(By.XPATH, '//div[@aria-label="Treść wiadomości"]')
+        message_body.send_keys(message)
+        
+        # Kliknięcie przycisku "Wyślij"
+        send_button = driver.find_element(By.XPATH, '//div[@aria-label="Wyślij"]')
+        send_button.click()
+        time.sleep(5)
+        
+        print("Wiadomość wysłana pomyślnie!")
+    
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    
+    finally:
+        driver.quit()
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Użycie: python script.py [adres email] [wiadomość]")
+        sys.exit(1)
+    
+    recipient = sys.argv[1]
+    message = sys.argv[2]
+    
+    send_email(recipient, message)
