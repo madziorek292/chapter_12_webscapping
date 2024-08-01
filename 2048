@@ -1,0 +1,64 @@
+#Wymagania:
+#Python
+#Selenium
+#Przeglądarka (np. Chrome) i odpowiedni WebDriver (np. ChromeDriver)
+#Kroki:
+#Instalacja wymaganych bibliotek.
+#Otwarcie strony gry 2048.
+#Symulacja naciskania klawiszy strzałek w celu automatycznej gry.
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+
+def play_2048():
+    # Konfiguracja WebDriver
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')  # Opcjonalnie, aby uruchomić w trybie bez głowy
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    
+    try:
+        # Otwarcie strony gry 2048
+        driver.get("https://gabrielecirulli.github.io/2048/")
+        time.sleep(2)  # Czekanie na załadowanie strony
+
+        # Pobranie elementu body, aby wysyłać klawisze do całej strony
+        game_element = driver.find_element_by_tag_name('body')
+        
+        # Automatyczna gra w 2048
+        while True:
+            game_element.send_keys(Keys.UP)
+            time.sleep(0.1)
+            game_element.send_keys(Keys.RIGHT)
+            time.sleep(0.1)
+            game_element.send_keys(Keys.DOWN)
+            time.sleep(0.1)
+            game_element.send_keys(Keys.LEFT)
+            time.sleep(0.1)
+    
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    
+    finally:
+        driver.quit()
+
+if __name__ == "__main__":
+    play_2048()
+
+#Wyjaśnienie krok po kroku:
+#Importowanie bibliotek:
+
+#selenium: Do automatyzacji przeglądarki.
+#webdriver_manager: Do automatycznego pobierania i instalacji WebDriver.
+#time: Do wstrzymywania wykonania kodu (np. oczekiwanie na załadowanie strony).
+#Funkcja play_2048:
+
+#Konfiguracja WebDriver z opcją uruchomienia w trybie bez głowy (opcja ta pozwala na uruchomienie przeglądarki w tle, bez widocznego interfejsu graficznego).
+#Otwarcie strony gry 2048.
+#Pobranie elementu body, aby móc wysyłać naciśnięcia klawiszy do całej strony.
+#W nieskończonej pętli wysyłane są naciśnięcia klawiszy strzałek w określonej kolejności (góra, prawo, dół, lewo), z krótkimi przerwami między nimi.
+#Główna część skryptu:
+
+#Wywołuje funkcję play_2048.
