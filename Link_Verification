@@ -1,0 +1,65 @@
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+
+def find_broken_links(url):
+    try:
+        # Pobranie zawartości strony
+        response = requests.get(url)
+        response.raise_for_status()  # Rzuci wyjątek dla błędów HTTP
+
+        # Przetwarzanie HTML strony za pomocą BeautifulSoup
+        soup = BeautifulSoup(response.text, 'html.parser')
+        links = soup.find_all('a')
+
+        broken_links = []
+
+        for link in links:
+            href = link.get('href')
+            if href:
+                # Uzyskanie pełnego URL
+                full_url = urljoin(url, href)
+                try:
+                    link_response = requests.get(full_url)
+                    if link_response.status_code == 404:
+                        print(f"Broken link found: {full_url}")
+                        broken_links.append(full_url)
+                except requests.exceptions.RequestException as e:
+                    print(f"Error checking {full_url}: {e}")
+
+        return broken_links
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error accessing {url}: {e}")
+        return []
+
+if __name__ == "__main__":
+    test_url = input("Enter the URL to check: ")
+    broken_links = find_broken_links(test_url)
+    print(f"Found {len(broken_links)} broken links.")
+
+
+
+#Wyjaśnienie krok po kroku:
+#Importowanie bibliotek:
+
+#requests: Do wykonywania żądań HTTP.
+#beautifulsoup4: Do parsowania HTML.
+#urllib.parse.urljoin: Do tworzenia pełnych URL-ów z URL-i względnych.
+#Funkcja find_broken_links:
+
+#Przyjmuje jeden argument: url (adres URL strony do sprawdzenia).
+#Pobiera zawartość strony za pomocą requests.get().
+#Sprawdza, czy żądanie zakończyło się sukcesem (response.raise_for_status()).
+#Przetwarza HTML strony za pomocą BeautifulSoup, aby znaleźć wszystkie tagi <a> (linki).
+#Iteruje przez znalezione linki i dla każdego z nich:
+#Pobiera atrybut href.
+#Tworzy pełny URL za pomocą urljoin().
+#Wykonuje żądanie HTTP do tego URL-a.
+#Sprawdza kod statusu odpowiedzi i jeśli jest to 404, dodaje link do listy broken_links oraz drukuje informację o uszkodzonym linku.
+#Zwraca listę uszkodzonych linków.
+#Główna część skryptu:
+
+#Pobiera URL od użytkownika.
+#Wywołuje funkcję find_broken_links z podanym URL-em.
+#Drukuje liczbę znalezionych uszkodzonych linków.
